@@ -1,6 +1,6 @@
-mod card_response;
-mod set_response;
 mod handlers;
+mod models;
+mod app_state;
 
 use axum::{
     routing::{get},
@@ -13,6 +13,7 @@ use std::env;
 use tokio::net::TcpListener;
 
 use handlers::{get_sets, get_card, get_set_cards, find_card};
+use app_state::AppState;
 
 #[tokio::main]
 async fn main() {
@@ -38,9 +39,4 @@ async fn main() {
     println!("Servidor rodando em http://{}", addr);
 
     axum::serve(listener, app).await.unwrap();
-}
-#[derive(Clone)]
-struct AppState {
-    client: Arc<Client>,
-    api_base_url: String,
 }
