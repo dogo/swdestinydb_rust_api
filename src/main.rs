@@ -12,6 +12,8 @@ use reqwest::Client;
 use std::{net::SocketAddr, sync::Arc};
 use std::env;
 use tokio::net::TcpListener;
+use utoipa::OpenApi;
+use utoipa_swagger_ui::SwaggerUi;
 
 use handlers::{get_sets, get_card, get_set_cards, find_card};
 use app_state::AppState;
@@ -33,6 +35,7 @@ async fn main() {
         .route("/cards/:set_code", get(get_set_cards))
         .route("/card/:card_id", get(get_card))
         .route("/find", get(find_card))
+        .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()))
         .with_state(state);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
@@ -41,3 +44,24 @@ async fn main() {
 
     axum::serve(listener, app).await.unwrap();
 }
+
+#[derive(OpenApi)]
+#[openapi(
+    paths(
+        handlers::get_sets,
+        handlers::get_card,
+        handlers::get_set_cards,
+        handlers::find_card
+    ),
+    components(
+        schemas(
+            models::set_response::SetResponse,
+            models::card_response::CardResponse,
+            models::card_response::Subtype
+        )
+    ),
+    tags(
+        (name = "cards", description = "Operações relacionadas a cartas")
+    )
+)]
+pub struct ApiDoc;

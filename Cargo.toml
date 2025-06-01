@@ -1,14 +1,16 @@
 [package]
-name = "rust_api"
+name = "swdestinydb_rust_api"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-dotenv = "0.15"
-tokio = { version = "1.37", features = ["full"] }
 axum = "0.7"
+dotenv = "0.15"
 hyper = { version = "1.2", features = ["full"] }
 hyper-util = { version = "0.1", features = ["tokio"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+tokio = { version = "1.37", features = ["full"] }
+utoipa = { version = "4", features = ["axum_extras"] }
+utoipa-swagger-ui = { version = "6.0.0", features = ["axum"] }

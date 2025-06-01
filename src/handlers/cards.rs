@@ -9,6 +9,18 @@ use crate::models::card_response::CardResponse;
 use crate::services::card_service::CardService;
 use crate::AppState;
 
+#[utoipa::path(
+    get,
+    path = "/card/{card_id}",
+    responses(
+        (status = 200, description = "Detalhes da carta", body = CardResponse),
+        (status = 502, description = "Erro ao buscar carta")
+    ),
+    params(
+        ("card_id" = String, Path, description = "ID da carta")
+    ),
+    tag = "cards"
+)]
 pub(crate) async fn get_card(
     State(state): State<AppState>,
     Path(card_id): Path<String>,
@@ -22,6 +34,18 @@ pub(crate) async fn get_card(
     }
 }
 
+#[utoipa::path(
+    get,
+    path = "/cards/{set_code}",
+    responses(
+        (status = 200, description = "Lista de cartas do set", body = [CardResponse]),
+        (status = 502, description = "Erro ao buscar cartas do set")
+    ),
+    params(
+        ("set_code" = String, Path, description = "Código do set")
+    ),
+    tag = "cards"
+)]
 pub(crate) async fn get_set_cards(
     State(state): State<AppState>,
     Path(set_code): Path<String>,
@@ -35,6 +59,18 @@ pub(crate) async fn get_set_cards(
     }
 }
 
+#[utoipa::path(
+    get,
+    path = "/find",
+    responses(
+        (status = 200, description = "Lista de cartas encontradas", body = [CardResponse]),
+        (status = 400, description = "Erro ao buscar cartas")
+    ),
+    params(
+        ("q" = String, Query, description = "Consulta para busca de cartas")
+    ),
+    tag = "cards"
+)]
 pub(crate) async fn find_card(
     State(state): State<AppState>,
     Query(params): Query<HashMap<String, String>>,
