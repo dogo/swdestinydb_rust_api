@@ -37,6 +37,7 @@ async fn main() {
         .route("/v1/cards/:set_code", get(get_set_cards))
         .route("/v1/card/:card_id", get(get_card))
         .route("/v1/find", get(find_card))
+        .route("/health", get(|| async { "OK" }))
         .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()))
         .with_state(state);
 
