@@ -5,40 +5,17 @@ use axum::{
 };
 
 use crate::models::set_response::SetResponse;
+use crate::services::sets_service::SetsService;
 use crate::AppState;
 
 pub(crate) async fn get_sets(
     State(state): State<AppState>,
 ) -> impl IntoResponse {
-    let url = format!("{}/sets", state.api_base_url);
-
-    match state.client.get(&url).send().await {
-        Ok(response) => {
-            let status = response.status();
-            let text = response.text().await.unwrap_or_default();
-
-            println!("🌐 Status da API: {status}");
-            println!("📦 JSON recebido:\n{text}");
-
-            // Tenta desserializar
-            match serde_json::from_str::<Vec<SetResponse>>(&text) {
-                Ok(cards) => {
-                    Json(cards).into_response()
-                }
-                Err(e) => {
-                    eprintln!("❌ Erro de deserialização: {e}");
-                    (
-                        axum::http::StatusCode::BAD_GATEWAY,
-                        format!("Invalid JSON: {e}"),
-                    )
-                        .into_response()
-                }
-            }
-        }
-        Err(_) => (
+    match SetsService::fetch_sets(&state).await {
+        Ok(cards) => Json::<Vec<SetResponse>>(cards).into_response(),
+        Err(e) => (
             axum::http::StatusCode::BAD_GATEWAY,
-            "Failed to contact upstream",
-        )
-            .into_response(),
+            e,
+        ).into_response(),
     }
 }

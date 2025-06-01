@@ -1,2 +1,2 @@
-pub mod card_response;
-pub mod set_response;
+pub(crate) mod card_response;
+pub(crate) mod set_response;
