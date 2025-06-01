@@ -33,10 +33,10 @@ async fn main() {
     };
 
     let app = Router::new()
-        .route("/sets", get(get_sets))
-        .route("/cards/:set_code", get(get_set_cards))
-        .route("/card/:card_id", get(get_card))
-        .route("/find", get(find_card))
+        .route("/v1/sets", get(get_sets))
+        .route("/v1/cards/:set_code", get(get_set_cards))
+        .route("/v1/card/:card_id", get(get_card))
+        .route("/v1/find", get(find_card))
         .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()))
         .with_state(state);
 
