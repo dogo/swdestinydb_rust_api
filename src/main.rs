@@ -14,6 +14,7 @@ use std::env;
 use tokio::net::TcpListener;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
+use tracing_subscriber;
 
 use handlers::{get_sets, get_card, get_set_cards, find_card};
 use app_state::AppState;
@@ -21,6 +22,7 @@ use app_state::AppState;
 #[tokio::main]
 async fn main() {
     dotenv().ok();
+    tracing_subscriber::fmt::init();
 
     let api_base_url = env::var("API_BASE_URL").expect("API_BASE_URL não definida");
     let client = Arc::new(Client::new());

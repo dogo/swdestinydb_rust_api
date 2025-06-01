@@ -1,6 +1,8 @@
 use crate::models::card_response::CardResponse;
 use crate::AppState;
 
+use tracing::{info, error};
+
 pub(crate) struct CardService;
 
 impl CardService {
@@ -10,12 +12,12 @@ impl CardService {
         let status = response.status();
         let text = response.text().await.unwrap_or_default();
 
-        println!("🌐 Status da API: {status}");
-        println!("📦 JSON recebido:\n{text}");
+        info!("🌐 Status da API: {}", status);
+        info!("📦 JSON recebido:\n{}", text);
 
         serde_json::from_str::<CardResponse>(&text)
             .map_err(|e| {
-                eprintln!("❌ Erro de deserialização: {e}");
+                error!("❌ Erro de deserialização: {}", e);
                 format!("Invalid JSON: {e}")
             })
     }
@@ -26,12 +28,12 @@ impl CardService {
         let status = response.status();
         let text = response.text().await.unwrap_or_default();
 
-        println!("🌐 Status da API: {status}");
-        println!("📦 JSON recebido:\n{text}");
+        info!("🌐 Status da API: {}", status);
+        info!("📦 JSON recebido:\n{}", text);
 
         serde_json::from_str::<Vec<CardResponse>>(&text)
             .map_err(|e| {
-                eprintln!("❌ Erro de deserialização: {e}");
+                error!("❌ Erro de deserialização: {}", e);
                 format!("Invalid JSON: {e}")
             })
     }
@@ -46,12 +48,12 @@ impl CardService {
         let status = response.status();
         let text = response.text().await.unwrap_or_default();
 
-        println!("🌐 Status da API: {status}");
-        println!("📦 JSON recebido:\n{text}");
+        info!("🌐 Status da API: {}", status);
+        info!("📦 JSON recebido:\n{}", text);
 
         serde_json::from_str::<Vec<CardResponse>>(&text)
             .map_err(|e| {
-                eprintln!("❌ Erro de deserialização: {e}");
+                error!("❌ Erro de deserialização: {}", e);
                 format!("Invalid JSON: {e}")
             })
     }

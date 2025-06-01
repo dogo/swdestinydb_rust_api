@@ -1,6 +1,8 @@
 use crate::models::set_response::SetResponse;
 use crate::AppState;
 
+use tracing::{info, error};
+
 pub(crate) struct SetsService;
 
 impl SetsService {
@@ -10,12 +12,12 @@ impl SetsService {
         let status = response.status();
         let text = response.text().await.unwrap_or_default();
 
-        println!("🌐 Status da API: {status}");
-        println!("📦 JSON recebido:\n{text}");
+        info!("🌐 Status da API: {}", status);
+        info!("📦 JSON recebido:\n{}", text);
 
         serde_json::from_str::<Vec<SetResponse>>(&text)
             .map_err(|e| {
-                eprintln!("❌ Erro de deserialização: {e}");
+                error!("❌ Erro de deserialização: {}", e);
                 format!("Invalid JSON: {e}")
             })
     }
