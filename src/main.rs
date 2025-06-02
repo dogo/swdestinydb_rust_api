@@ -2,6 +2,7 @@ mod handlers;
 mod models;
 mod services;
 mod app_state;
+mod utils;
 
 use axum::{
     routing::{get},
@@ -15,6 +16,7 @@ use tokio::net::TcpListener;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 use tracing_subscriber;
+use metrics_exporter_prometheus::PrometheusBuilder;
 
 use handlers::{get_sets, get_card, get_set_cards, find_card};
 use app_state::AppState;
@@ -23,6 +25,9 @@ use app_state::AppState;
 async fn main() {
     dotenv().ok();
     tracing_subscriber::fmt::init();
+
+    let builder = PrometheusBuilder::new();
+    let recorder = builder.install_recorder().unwrap();
 
     let api_base_url = env::var("API_BASE_URL").expect("API_BASE_URL não definida");
     let client = Arc::new(Client::new());
@@ -38,6 +43,9 @@ async fn main() {
         .route("/v1/card/:card_id", get(get_card))
         .route("/v1/find", get(find_card))
         .route("/health", get(|| async { "OK" }))
+        .route("/metrics", get(move || async move {
+            recorder.render()
+        }))
         .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()))
         .with_state(state);
 
